@@ -43,7 +43,16 @@ footer{text-align:center;color:#8589a5;font-size:.8rem;padding:0 16px 28px}
 </div>
 <label for="outline">Text outline</label><select id="outline"><option value="black">Classic black outline</option><option value="white">White outline</option><option value="none">No outline</option></select>
 <label for="format">Canvas shape</label><select id="format"><option value="square">Square (social post)</option><option value="classic">Classic meme (4:3)</option><option value="story">Story (9:16)</option></select>
-<button class="primary" id="download">⬇ Download meme (PNG)</button>
+<div class="panel" style="margin-top:16px">
+  <h2>😂 Funny Caption Generator</h2>
+  <label for="topic">What's your meme about?</label>
+  <input id="topic" type="text" placeholder="e.g. Monday mornings">
+  <button type="button" class="primary" id="generateCaptions">
+    ✨ Generate captions
+  </button>
+  <p id="captionStatus">Enter a topic to get funny ideas!</p>
+</div>
+   <button class="primary" id="download">⬇ Download meme (PNG)</button>
 <div class="buttons"><button class="secondary" id="random">🎲 Random captions</button><button class="secondary" id="reset">↺ Reset</button></div>
 </section>
 <section class="preview">
@@ -84,7 +93,21 @@ document.getElementById('imageUpload').addEventListener('change',e=>{const file=
 document.getElementById('download').addEventListener('click',()=>{const a=document.createElement('a');a.download='my-meme.png';a.href=canvas.toDataURL('image/png');a.click()});
 document.getElementById('random').addEventListener('click',()=>{topInput.value=randomTop[Math.floor(Math.random()*randomTop.length)];bottomInput.value=randomBottom[Math.floor(Math.random()*randomBottom.length)];draw()});
 document.getElementById('reset').addEventListener('click',()=>{topInput.value='WHEN THE CODE FINALLY WORKS';bottomInput.value="AND YOU DON'T KNOW WHY";fontInput.value=42;colorInput.value='#ffffff';outlineInput.value='black';formatInput.value='square';uploadedImage=null;preset='panic';document.getElementById('imageUpload').value='';draw()});
-draw();
+document.getElementById('generateCaptions').addEventListener('click',()=>{
+  const topic=document.getElementById('topic').value.trim()||'everyday life';
+  const ideas=[
+    [`WHEN ${topic.toUpperCase()} HITS`,'I WAS NOT READY FOR THIS'],
+    ['ME: TODAY WILL BE PRODUCTIVE',`ALSO ME: ${topic.toUpperCase()}`],
+    ['NOBODY: NOTHING',`MY BRAIN AT 3AM: ${topic.toUpperCase()}`],
+    ['MY EXPECTATIONS',`THE REALITY OF ${topic.toUpperCase()}`]
+  ];
+  const idea=ideas[Math.floor(Math.random()*ideas.length)];
+  topInput.value=idea[0].slice(0,120);
+  bottomInput.value=idea[1].slice(0,120);
+  draw();
+  document.getElementById('captionStatus').textContent='😂 New captions generated!';
+});
+   draw();
 </script>
 </body>
 </html>
