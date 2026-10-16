@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meme Machine</title>
+<style>
+:root{--bg:#10111b;--panel:#1a1c2b;--ink:#f7f7fb;--muted:#a9adc4;--accent:#a78bfa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#292044 0,#10111b 48%);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{text-align:center;padding:34px 16px 22px}header .logo{font-size:2.4rem}h1{margin:4px 0;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:-.04em}header p{margin:8px 0;color:var(--muted)}
+main{width:min(1120px,94vw);margin:0 auto 48px;display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:22px;align-items:start}
+.panel{background:#1a1c2beF;border:1px solid #ffffff16;border-radius:20px;padding:22px;box-shadow:0 18px 60px #0003}.panel h2{font-size:1rem;margin:0 0 16px;color:#dcd7fe}
+label{display:block;font-size:.87rem;color:#d5d7e8;margin:15px 0 7px}input[type=text],select{width:100%;padding:12px 13px;border-radius:11px;border:1px solid #ffffff24;background:#10111b;color:white;font:inherit;outline:none}input:focus,select:focus{border-color:var(--accent)}input[type=file]{width:100%;font-size:.84rem;color:var(--muted)}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=color]{width:100%;height:42px;border:0;background:transparent;cursor:pointer}input[type=range]{width:100%;accent-color:var(--accent)}
+button{border:0;border-radius:12px;padding:12px 15px;font:700 .95rem system-ui;cursor:pointer;transition:transform .15s,opacity .15s}button:hover{transform:translateY(-1px)}.primary{background:var(--accent);color:#171126;width:100%;margin-top:18px}.secondary{background:#ffffff12;color:white;border:1px solid #ffffff1c}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.hint{color:var(--muted);font-size:.8rem;margin-top:8px}
+.preview{display:flex;flex-direction:column;gap:12px}.canvas-wrap{padding:14px;background:#0b0c13;border-radius:18px;border:1px solid #ffffff17;display:flex;justify-content:center;align-items:center;min-height:360px}canvas{display:block;max-width:100%;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:8px}.preview-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:.85rem}.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.presets button{padding:8px 10px;font-size:.8rem;background:#ffffff10;color:#e9e6ff;border:1px solid #ffffff16}
+footer{text-align:center;color:#8589a5;font-size:.8rem;padding:0 16px 28px}
+@media(max-width:800px){main{grid-template-columns:1fr}.canvas-wrap{min-height:250px}.panel{padding:18px}}
+</style>
+</head>
+<body>
+<header><div class="logo">😂</div><h1>Meme Machine</h1><p>Your idea. Your caption. Instant meme.</p></header>
+<main>
+<section class="panel">
+<h2>🛠️ Make it yours</h2>
+<label for="topText">Top caption</label><input id="topText" type="text" maxlength="120" value="WHEN THE CODE FINALLY WORKS">
+<label for="bottomText">Bottom caption</label><input id="bottomText" type="text" maxlength="120" value="AND YOU DON'T KNOW WHY">
+<label for="imageUpload">Upload your own image</label><input id="imageUpload" type="file" accept="image/*">
+<div class="hint">No image handy? Pick a vibe below to start with a colorful background.</div>
+<div class="presets">
+<button type="button" data-preset="panic">😱 Panic</button><button type="button" data-preset="success">😎 Success</button><button type="button" data-preset="brain">🧠 Big brain</button><button type="button" data-preset="cat">🐱 Cat energy</button>
+</div>
+<div class="row">
+<div><label for="fontSize">Caption size</label><input id="fontSize" type="range" min="20" max="64" value="42"></div>
+<div><label for="textColor">Text color</label><input id="textColor" type="color" value="#ffffff"></div>
+</div>
+<label for="outline">Text outline</label><select id="outline"><option value="black">Classic black outline</option><option value="white">White outline</option><option value="none">No outline</option></select>
+<label for="format">Canvas shape</label><select id="format"><option value="square">Square (social post)</option><option value="classic">Classic meme (4:3)</option><option value="story">Story (9:16)</option></select>
+<button class="primary" id="download">⬇ Download meme (PNG)</button>
+<div class="buttons"><button class="secondary" id="random">🎲 Random captions</button><button class="secondary" id="reset">↺ Reset</button></div>
+</section>
+<section class="preview">
+<div class="canvas-wrap"><canvas id="meme" width="800" height="800" aria-label="Meme preview"></canvas></div>
+<div class="preview-foot"><span>✨ Preview updates as you type</span><span id="dimensions">800 × 800</span></div>
+</section>
+</main>
+<footer>Made for extremely serious internet business. Images stay in your browser.</footer>
+<script>
+const canvas=document.getElementById('meme'),ctx=canvas.getContext('2d');
+const topInput=document.getElementById('topText'),bottomInput=document.getElementById('bottomText');
+const fontInput=document.getElementById('fontSize'),colorInput=document.getElementById('textColor'),outlineInput=document.getElementById('outline'),formatInput=document.getElementById('format');
+let uploadedImage=null,preset='panic';
+const scenes={
+ panic:{bg:['#f97316','#7c2d12'],emoji:'😱',title:'THIS IS FINE?'},
+ success:{bg:['#06b6d4','#164e63'],emoji:'😎',title:'ABSOLUTE LEGEND'},
+ brain:{bg:['#8b5cf6','#312e81'],emoji:'🧠',title:'GALAXY BRAIN'},
+ cat:{bg:['#f472b6','#831843'],emoji:'🐱',title:'CHAOS GREMLIN'}
+};
+const randomTop=['ME: I’LL SLEEP EARLY TONIGHT','WHEN SOMEONE SAYS “QUICK QUESTION”','MY LAST TWO BRAIN CELLS','OPENING THE FRIDGE FOR THE 9TH TIME','POV: YOU CLICKED “REMIND ME TOMORROW”','WHEN THE WIFI DROPS FOR 2 SECONDS'];
+const randomBottom=['ALSO ME AT 3:17 AM','THERE GOES MY ENTIRE AFTERNOON','WORKING OVERTIME AGAIN','STILL NO NEW INFORMATION','IT’S A TOMORROW PROBLEM','WE TAKE THOSE'];
+function dimensions(){let f=formatInput.value;if(f==='classic')return[800,600];if(f==='story')return[600,1067];return[800,800]}
+function wrap(text,maxWidth){const words=text.trim().split(/\s+/).filter(Boolean);let lines=[],line='';for(const word of words){let test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);return lines}
+function drawCaption(text,y,isBottom,w,h){if(!text)return;const size=+fontInput.value;ctx.font=`900 ${size}px Impact, "Arial Black", sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';const lines=wrap(text.toUpperCase(),w-44);const lineHeight=size*1.12;let startY=isBottom? h-20-lineHeight*(lines.length-.5):20+lineHeight*.5;lines.forEach((line,i)=>{const yy=startY+i*lineHeight;ctx.fillStyle=colorInput.value;ctx.strokeStyle=outlineInput.value==='white'?'white':'black';ctx.lineWidth=Math.max(3,size*.11);if(outlineInput.value!=='none')ctx.strokeText(line,w/2,yy,w-36);ctx.fillText(line,w/2,yy,w-36)})}
+function draw(){const [w,h]=dimensions();canvas.width=w;canvas.height=h;document.getElementById('dimensions').textContent=`${w} × ${h}`;
+if(uploadedImage){let scale=Math.max(w/uploadedImage.width,h/uploadedImage.height),dw=uploadedImage.width*scale,dh=uploadedImage.height*scale;ctx.drawImage(uploadedImage,(w-dw)/2,(h-dh)/2,dw,dh)}
+else{const s=scenes[preset]||scenes.panic;let g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,s.bg[0]);g.addColorStop(1,s.bg[1]);ctx.fillStyle=g;ctx.fillRect(0,0,w,h);ctx.fillStyle='#ffffff12';for(let i=0;i<9;i++){ctx.beginPath();ctx.arc((i*137+55)%w,(i*197+70)%h,30+(i%3)*18,0,Math.PI*2);ctx.fill()}ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${Math.min(w,h)*.38}px system-ui`;ctx.fillText(s.emoji,w/2,h*.48);ctx.fillStyle='#ffffff2b';ctx.font=`900 ${Math.min(w,h)*.055}px system-ui`;ctx.fillText(s.title,w/2,h*.72)}
+// Slight dark fade behind captions improves readability.
+const fade=ctx.createLinearGradient(0,0,0,h);fade.addColorStop(0,'#0008');fade.addColorStop(.2,'#0000');fade.addColorStop(.78,'#0000');fade.addColorStop(1,'#0008');ctx.fillStyle=fade;ctx.fillRect(0,0,w,h);
+drawCaption(topInput.value,0,false,w,h);drawCaption(bottomInput.value,0,true,w,h)}
+[topInput,bottomInput,fontInput,colorInput,outlineInput,formatInput].forEach(el=>el.addEventListener('input',draw));
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{preset=b.dataset.preset;uploadedImage=null;document.getElementById('imageUpload').value='';draw()}));
+document.getElementById('imageUpload').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const img=new Image();img.onload=()=>{uploadedImage=img;draw()};img.src=URL.createObjectURL(file)});
+document.getElementById('download').addEventListener('click',()=>{const a=document.createElement('a');a.download='my-meme.png';a.href=canvas.toDataURL('image/png');a.click()});
+document.getElementById('random').addEventListener('click',()=>{topInput.value=randomTop[Math.floor(Math.random()*randomTop.length)];bottomInput.value=randomBottom[Math.floor(Math.random()*randomBottom.length)];draw()});
+document.getElementById('reset').addEventListener('click',()=>{topInput.value='WHEN THE CODE FINALLY WORKS';bottomInput.value="AND YOU DON'T KNOW WHY";fontInput.value=42;colorInput.value='#ffffff';outlineInput.value='black';formatInput.value='square';uploadedImage=null;preset='panic';document.getElementById('imageUpload').value='';draw()});
+draw();
+</script>
+</body>
+</html>
