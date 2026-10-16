@@ -28,7 +28,14 @@ footer{text-align:center;color:#8589a5;font-size:.8rem;padding:0 16px 28px}
 <label for="imageUpload">Upload your own image</label><input id="imageUpload" type="file" accept="image/*">
 <div class="hint">No image handy? Pick a vibe below to start with a colorful background.</div>
 <div class="presets">
-<button type="button" data-preset="panic">😱 Panic</button><button type="button" data-preset="success">😎 Success</button><button type="button" data-preset="brain">🧠 Big brain</button><button type="button" data-preset="cat">🐱 Cat energy</button>
+<button type="button" data-preset="panic">😱 Panic</button>
+<button type="button" data-preset="success">😎 Success</button>
+<button type="button" data-preset="brain">🧠 Big brain</button>
+<button type="button" data-preset="cat">🐱 Cat energy</button>
+<button type="button" data-preset="school">🏫 School life</button>
+<button type="button" data-preset="work">💻 Work problems</button>
+<button type="button" data-preset="love">❤️ Love life</button>
+<button type="button" data-preset="money">💸 Broke again</button>
 </div>
 <div class="row">
 <div><label for="fontSize">Caption size</label><input id="fontSize" type="range" min="20" max="64" value="42"></div>
@@ -51,10 +58,14 @@ const topInput=document.getElementById('topText'),bottomInput=document.getElemen
 const fontInput=document.getElementById('fontSize'),colorInput=document.getElementById('textColor'),outlineInput=document.getElementById('outline'),formatInput=document.getElementById('format');
 let uploadedImage=null,preset='panic';
 const scenes={
- panic:{bg:['#f97316','#7c2d12'],emoji:'😱',title:'THIS IS FINE?'},
- success:{bg:['#06b6d4','#164e63'],emoji:'😎',title:'ABSOLUTE LEGEND'},
- brain:{bg:['#8b5cf6','#312e81'],emoji:'🧠',title:'GALAXY BRAIN'},
- cat:{bg:['#f472b6','#831843'],emoji:'🐱',title:'CHAOS GREMLIN'}
+   panic:{bg:['#f97316','#7c2d12'],emoji:'😱',title:'THIS IS FINE?'},
+  success:{bg:['#06b6d4','#164e63'],emoji:'😎',title:'ABSOLUTE LEGEND'},
+  brain:{bg:['#8b5cf6','#312e81'],emoji:'🧠',title:'GALAXY BRAIN'},
+  cat:{bg:['#f472b6','#831843'],emoji:'🐱',title:'CHAOS GREMLIN'},
+  school:{bg:['#60a5fa','#1e3a8a'],emoji:'🏫',title:'ACADEMIC SURVIVOR'},
+  work:{bg:['#64748b','#1e293b'],emoji:'💻',title:'CORPORATE SUFFERING'},
+  love:{bg:['#fb7185','#881337'],emoji:'❤️',title:'ROMANTIC DISASTER'},
+  money:{bg:['#34d399','#064e3b'],emoji:'💸',title:'FINANCIALLY UNWELL'}
 };
 const randomTop=['ME: I’LL SLEEP EARLY TONIGHT','WHEN SOMEONE SAYS “QUICK QUESTION”','MY LAST TWO BRAIN CELLS','OPENING THE FRIDGE FOR THE 9TH TIME','POV: YOU CLICKED “REMIND ME TOMORROW”','WHEN THE WIFI DROPS FOR 2 SECONDS'];
 const randomBottom=['ALSO ME AT 3:17 AM','THERE GOES MY ENTIRE AFTERNOON','WORKING OVERTIME AGAIN','STILL NO NEW INFORMATION','IT’S A TOMORROW PROBLEM','WE TAKE THOSE'];
